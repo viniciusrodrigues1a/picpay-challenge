@@ -22,7 +22,7 @@ public class UserEntity {
     this.fullName = fullName;
     this.email = email;
     this.document = document;
-    this.documentType = DocumentType.CPF;
+    this.documentType = isCNPJ(document) ? DocumentType.CNPJ : DocumentType.CPF;
     this.type = type;
   }
 
@@ -49,5 +49,10 @@ public class UserEntity {
   private boolean isEmailValid(String email) {
     String regexPattern = "^(.+)@(\\S+)$";
     return Pattern.compile(regexPattern).matcher(email).matches();
+  }
+
+  private boolean isCNPJ(String document) {
+    Pattern cnpjPattern = Pattern.compile("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}");
+    return cnpjPattern.matcher(document).matches();
   }
 }
