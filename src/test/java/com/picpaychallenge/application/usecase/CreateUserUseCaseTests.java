@@ -2,6 +2,7 @@ package com.picpaychallenge.application.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Optional;
 
@@ -13,11 +14,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.picpaychallenge.application.ApplicationExceptionCodes;
+import com.picpaychallenge.application.dto.CreateUserDTO;
+import com.picpaychallenge.application.dto.UserDTO;
 import com.picpaychallenge.application.repository.ICreateUserRepository;
 import com.picpaychallenge.application.repository.IFindOneUserByDocumentRepository;
 import com.picpaychallenge.application.repository.IFindOneUserByEmailRepository;
 import com.picpaychallenge.common.ExceptionWithCode;
 import com.picpaychallenge.domain.entity.UserEntity;
+import com.picpaychallenge.domain.valueobjects.DocumentType;
 import com.picpaychallenge.domain.valueobjects.UserType;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,13 +47,15 @@ class CreateUserUseCaseTests {
   void shouldThrowEmailTakenException() {
     try {
       // Given
-      UserEntity givenUser = new UserEntity("Vinicius", "viniciusrodrigues.aro@gmail.com",
+      CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
+          "password123",
           "111.111.111-11",
           UserType.COMMON);
-      UserEntity mockedExistingUser = new UserEntity("Vinicius Rodrigues", "viniciusrodrigues.aro@gmail.com",
+      UserDTO mockedExistingUser = new UserDTO("Vinicius Rodrigues", "viniciusrodrigues.aro@gmail.com",
           "000.000.000-00",
+          DocumentType.CPF,
           UserType.COMMON);
-      Mockito.when(this.findOneUserByEmailRepository.findOneUserByEmail(mockedExistingUser.getEmail()))
+      Mockito.when(this.findOneUserByEmailRepository.findOneUserByEmail(mockedExistingUser.email()))
           .thenReturn(Optional.of(mockedExistingUser));
 
       // When
@@ -65,16 +71,17 @@ class CreateUserUseCaseTests {
   void shouldThrowDocumentTakenException() {
     try {
       // Given
-      UserEntity givenUser = new UserEntity("Vinicius",
-          "vinicius.rodrigues@gmail.com",
+      CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
+          "password123",
           "000.000.000-00",
           UserType.COMMON);
-      UserEntity mockedExistingUser = new UserEntity("Vinicius Rodrigues",
+      UserDTO mockedExistingUser = new UserDTO("Vinicius Rodrigues",
           "viniciusrodrigues.aro@gmail.com",
           "000.000.000-00",
+          DocumentType.CPF,
           UserType.COMMON);
-      Mockito.lenient()
-          .when(this.findOneUserByDocumentRepository.findOneUserByDocument(mockedExistingUser.getDocument()))
+      Mockito
+          .when(this.findOneUserByDocumentRepository.findOneUserByDocument(mockedExistingUser.document()))
           .thenReturn(Optional.of(mockedExistingUser));
 
       // When
@@ -91,10 +98,9 @@ class CreateUserUseCaseTests {
   @Test
   void shouldCallCreateUserRepository() {
     try {
-
       // Given
-      UserEntity givenUser = new UserEntity("Vinicius",
-          "vinicius.rodrigues@gmail.com",
+      CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
+          "password123",
           "000.000.000-00",
           UserType.COMMON);
 
@@ -102,7 +108,7 @@ class CreateUserUseCaseTests {
       createUserUseCase.createUser(givenUser);
 
       // Then
-      Mockito.verify(this.createUserRepository).create(givenUser);
+      Mockito.verify(this.createUserRepository).create(any(UserEntity.class), any(String.class));
     } catch (ExceptionWithCode exception) {
       fail();
     }

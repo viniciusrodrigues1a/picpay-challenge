@@ -2,8 +2,8 @@ package com.picpaychallenge.application.repository;
 
 import java.util.Optional;
 
-import com.picpaychallenge.domain.entity.UserEntity;
+import com.picpaychallenge.application.dto.UserDTO;
 
 public interface IFindOneUserByEmailRepository {
-  public Optional<UserEntity> findOneUserByEmail(String email);
+  public Optional<UserDTO> findOneUserByEmail(String email);
 }

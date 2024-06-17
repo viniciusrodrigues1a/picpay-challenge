@@ -3,6 +3,8 @@ package com.picpaychallenge.application.usecase;
 import java.util.Optional;
 
 import com.picpaychallenge.application.ApplicationExceptionCodes;
+import com.picpaychallenge.application.dto.CreateUserDTO;
+import com.picpaychallenge.application.dto.UserDTO;
 import com.picpaychallenge.application.repository.ICreateUserRepository;
 import com.picpaychallenge.application.repository.IFindOneUserByDocumentRepository;
 import com.picpaychallenge.application.repository.IFindOneUserByEmailRepository;
@@ -23,17 +25,22 @@ public class CreateUserUseCase {
     this.findOneUserByDocumentRepository = findOneUserByDocumentRepository;
   }
 
-  public UserEntity createUser(UserEntity user) throws ExceptionWithCode {
-    Optional<UserEntity> userWithSameEmail = this.findOneUserByEmailRepository.findOneUserByEmail(user.getEmail());
+  public UserDTO createUser(CreateUserDTO request) throws ExceptionWithCode {
+    UserEntity user = new UserEntity(request.fullName(), request.email(), request.document(), request.type());
+
+    Optional<UserDTO> userWithSameEmail = this.findOneUserByEmailRepository.findOneUserByEmail(user.getEmail());
     if (userWithSameEmail.isPresent())
       throw new ExceptionWithCode("E-mail já existe.",
           ApplicationExceptionCodes.EMAIL_TAKEN.name());
 
-    Optional<UserEntity> userWithSameDocument = this.findOneUserByDocumentRepository
+    Optional<UserDTO> userWithSameDocument = this.findOneUserByDocumentRepository
         .findOneUserByDocument(user.getDocument());
     if (userWithSameDocument.isPresent())
       throw new ExceptionWithCode("Documento já utilizado.", ApplicationExceptionCodes.DOCUMENT_TAKEN.name());
 
-    return this.createUserRepository.create(user);
+    this.createUserRepository.create(user, request.password());
+
+    return new UserDTO(user.getFullName(), user.getEmail(), user.getDocument(), user.getDocumentType(),
+        user.getUserType());
   }
 }

@@ -2,8 +2,8 @@ package com.picpaychallenge.application.repository;
 
 import java.util.Optional;
 
-import com.picpaychallenge.domain.entity.UserEntity;
+import com.picpaychallenge.application.dto.UserDTO;
 
 public interface IFindOneUserByDocumentRepository {
-  public Optional<UserEntity> findOneUserByDocument(String document);
+  public Optional<UserDTO> findOneUserByDocument(String document);
 }
