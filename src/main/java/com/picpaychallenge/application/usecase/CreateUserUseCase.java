@@ -26,7 +26,8 @@ public class CreateUserUseCase {
   }
 
   public UserDTO createUser(CreateUserDTO request) throws ExceptionWithCode {
-    UserEntity user = new UserEntity(request.fullName(), request.email(), request.document(), request.type());
+    UserEntity user = new UserEntity(null, request.fullName(), request.email(), request.document(), request.type(),
+        request.cents());
 
     Optional<UserDTO> userWithSameEmail = this.findOneUserByEmailRepository.findOneUserByEmail(user.getEmail());
     if (userWithSameEmail.isPresent())
@@ -40,7 +41,7 @@ public class CreateUserUseCase {
 
     this.createUserRepository.create(user, request.password());
 
-    return new UserDTO(user.getFullName(), user.getEmail(), user.getDocument(), user.getDocumentType(),
-        user.getUserType());
+    return new UserDTO(user.getId(), user.getFullName(), user.getEmail(), user.getDocument(), user.getDocumentType(),
+        user.getUserType(), user.getBalance().getCents());
   }
 }

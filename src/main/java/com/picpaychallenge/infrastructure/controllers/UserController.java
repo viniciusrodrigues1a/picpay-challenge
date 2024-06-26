@@ -24,8 +24,8 @@ public class UserController {
   @PostMapping
   CreateUserControllerDTO.Response create(@RequestBody CreateUserControllerDTO.Request request)
       throws ExceptionWithCode {
-    CreateUserDTO userEntity = UserMapper.controllerRequestToDomainRequest(request);
-    UserDTO createdUser = this.createUserUseCase.createUser(userEntity);
+    CreateUserDTO createUserDTO = UserMapper.controllerRequestToDomainRequest(request);
+    UserDTO createdUser = this.createUserUseCase.createUser(createUserDTO);
     return UserMapper.domainDtoToControllerResponse(createdUser);
   }
 }

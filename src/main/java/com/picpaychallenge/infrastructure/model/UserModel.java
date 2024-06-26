@@ -2,8 +2,6 @@ package com.picpaychallenge.infrastructure.model;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.UuidGenerator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,7 +16,6 @@ import com.picpaychallenge.domain.valueobjects.UserType;
 @Table(name = "users")
 public class UserModel {
   @Id
-  @UuidGenerator
   @Column(nullable = false)
   private UUID id;
 
@@ -40,19 +37,25 @@ public class UserModel {
   private UserType userType;
 
   @Column(nullable = false)
+  private int balance = 0;
+
+  @Column(nullable = false)
   private String password;
 
   public UserModel() {
   }
 
-  public UserModel(String email, String fullName, String document, DocumentType documentType, UserType userType,
+  public UserModel(UUID id, String email, String fullName, String document, DocumentType documentType,
+      UserType userType, int cents,
       String password) {
+    this.id = id;
     this.email = email;
     this.fullName = fullName;
     this.document = document;
     this.documentType = documentType;
     this.userType = userType;
     this.password = password;
+    this.balance = cents;
   }
 
   public UUID getId() {
@@ -109,5 +112,13 @@ public class UserModel {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public int getBalance() {
+    return balance;
+  }
+
+  public void setBalance(int balance) {
+    this.balance = balance;
   }
 }

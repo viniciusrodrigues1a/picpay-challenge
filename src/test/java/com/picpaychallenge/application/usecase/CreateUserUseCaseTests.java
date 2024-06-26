@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,12 @@ class CreateUserUseCaseTests {
       CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
           "password123",
           "111.111.111-11",
-          UserType.COMMON);
-      UserDTO mockedExistingUser = new UserDTO("Vinicius Rodrigues", "viniciusrodrigues.aro@gmail.com",
+          UserType.COMMON, 0);
+      UserDTO mockedExistingUser = new UserDTO(UUID.randomUUID(), "Vinicius Rodrigues",
+          "viniciusrodrigues.aro@gmail.com",
           "000.000.000-00",
           DocumentType.CPF,
-          UserType.COMMON);
+          UserType.COMMON, 0);
       Mockito.when(this.findOneUserByEmailRepository.findOneUserByEmail(mockedExistingUser.email()))
           .thenReturn(Optional.of(mockedExistingUser));
 
@@ -74,12 +76,12 @@ class CreateUserUseCaseTests {
       CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
           "password123",
           "000.000.000-00",
-          UserType.COMMON);
-      UserDTO mockedExistingUser = new UserDTO("Vinicius Rodrigues",
+          UserType.COMMON, 0);
+      UserDTO mockedExistingUser = new UserDTO(UUID.randomUUID(), "Vinicius Rodrigues",
           "viniciusrodrigues.aro@gmail.com",
           "000.000.000-00",
           DocumentType.CPF,
-          UserType.COMMON);
+          UserType.COMMON, 0);
       Mockito
           .when(this.findOneUserByDocumentRepository.findOneUserByDocument(mockedExistingUser.document()))
           .thenReturn(Optional.of(mockedExistingUser));
@@ -102,7 +104,7 @@ class CreateUserUseCaseTests {
       CreateUserDTO givenUser = new CreateUserDTO("Vinicius", "viniciusrodrigues.aro@gmail.com",
           "password123",
           "000.000.000-00",
-          UserType.COMMON);
+          UserType.COMMON, 0);
 
       // When
       createUserUseCase.createUser(givenUser);
